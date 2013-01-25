@@ -32,13 +32,16 @@ namespace TestComplete.Controllers
 
         public ActionResult Seed()
         {
-            var db = new UsersContext();
+            //new TestComplete.Migrations.Test2().Up();
+            
 
-            foreach (var recurso in db.Recursos)
-            {
-                db.Recursos.Remove(recurso);
-            }
+            var db = new UsersContext();
             db.SaveChanges();
+            //foreach (var recurso in db.Recursos)
+            //{
+            //    db.Recursos.Remove(recurso);
+            //}
+            //db.SaveChanges();
 
             db.Recursos.Add(new Recurso() { Descripcion = "Usuario 01" });
             db.Recursos.Add(new Recurso() { Descripcion = "Usuario 02" });

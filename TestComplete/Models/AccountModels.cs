@@ -36,6 +36,7 @@ namespace TestComplete.Models
     {
         [Required]
         [Display(Name = "E-mail")]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress)]
         public string UserName { get; set; }
 
         public string ExternalLoginData { get; set; }
@@ -64,6 +65,7 @@ namespace TestComplete.Models
     {
         [Required]
         [Display(Name = "E-mail")]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress)]
         public string UserName { get; set; }
 
         [Required]
@@ -79,6 +81,7 @@ namespace TestComplete.Models
     {
         [Required]
         [Display(Name = "E-mail")]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress)]
         public string UserName { get; set; }
 
         [Required]

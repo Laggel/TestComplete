@@ -3,7 +3,7 @@ namespace TestComplete.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Test1 : DbMigration
+    public partial class Test3 : DbMigration
     {
         public override void Up()
         {
@@ -60,16 +60,16 @@ namespace TestComplete.Migrations
         
         public override void Down()
         {
-            //DropIndex("dbo.Queues", new[] { "UserId" });
-            //DropIndex("dbo.RecursoUsuarios", new[] { "UserId" });
-            //DropIndex("dbo.RecursoUsuarios", new[] { "RecursoId" });
-            //DropForeignKey("dbo.Queues", "UserId", "dbo.UserProfile");
-            //DropForeignKey("dbo.RecursoUsuarios", "UserId", "dbo.UserProfile");
-            //DropForeignKey("dbo.RecursoUsuarios", "RecursoId", "dbo.Recursoes");
+            DropIndex("dbo.Queues", new[] { "UserId" });
+            DropIndex("dbo.RecursoUsuarios", new[] { "UserId" });
+            DropIndex("dbo.RecursoUsuarios", new[] { "RecursoId" });
+            DropForeignKey("dbo.Queues", "UserId", "dbo.UserProfile");
+            DropForeignKey("dbo.RecursoUsuarios", "UserId", "dbo.UserProfile");
+            DropForeignKey("dbo.RecursoUsuarios", "RecursoId", "dbo.Recursoes");
             DropTable("dbo.Queues");
             DropTable("dbo.RecursoUsuarios");
             DropTable("dbo.Recursoes");
-            //DropTable("dbo.UserProfile");
+            DropTable("dbo.UserProfile");
         }
     }
 }

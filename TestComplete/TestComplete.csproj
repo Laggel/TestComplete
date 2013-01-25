@@ -168,13 +168,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201301251558358_Test1.cs" />
-    <Compile Include="Migrations\201301251558358_Test1.Designer.cs">
-      <DependentUpon>201301251558358_Test1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201301251601026_Test2.cs" />
-    <Compile Include="Migrations\201301251601026_Test2.Designer.cs">
-      <DependentUpon>201301251601026_Test2.cs</DependentUpon>
+    <Compile Include="Migrations\201301252028006_Test3.cs" />
+    <Compile Include="Migrations\201301252028006_Test3.Designer.cs">
+      <DependentUpon>201301252028006_Test3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -309,11 +305,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301251558358_Test1.resx">
-      <DependentUpon>201301251558358_Test1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201301251601026_Test2.resx">
-      <DependentUpon>201301251601026_Test2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201301252028006_Test3.resx">
+      <DependentUpon>201301252028006_Test3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

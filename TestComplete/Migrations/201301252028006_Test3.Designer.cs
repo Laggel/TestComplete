@@ -5,13 +5,13 @@ namespace TestComplete.Migrations
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
     
-    public sealed partial class Test1 : IMigrationMetadata
+    public sealed partial class Test3 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Test1));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Test3));
         
         string IMigrationMetadata.Id
         {
-            get { return "201301251558358_Test1"; }
+            get { return "201301252028006_Test3"; }
         }
         
         string IMigrationMetadata.Source

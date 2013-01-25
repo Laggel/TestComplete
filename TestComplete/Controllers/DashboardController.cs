@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using TestComplete.Models;
@@ -64,7 +65,7 @@ namespace TestComplete.Controllers
             //                         select ru).Any()
             var recursos = (from r in db.Recursos
                             where !test.Contains(r.RecursoId)
-                            select r);
+                            select r).ToList();
 
             var queue = (from q in db.Queues
                          where !q.Estado
@@ -92,13 +93,15 @@ namespace TestComplete.Controllers
                         db.RecursoUsuarios.Add(recursoUsuario);
 
                         usuario.Estado = true;
+                        db.SaveChanges();
+                        sendMail(usuario.User.UserName);
                     }
                 }
                 db.SaveChanges();
             }
         }
 
-        public bool isQueue()
+        private bool isQueue()
         {
             var userId = db.UserProfiles.Where(r => r.UserName == User.Identity.Name).FirstOrDefault().UserId;
 
@@ -114,7 +117,26 @@ namespace TestComplete.Controllers
                            ;
         }
 
+        private void sendMail(string email)
+        {
+            var smtp = new SmtpClient("smtp.gmail.com");
+            smtp.UseDefaultCredentials = false;
+            var credentials = new System.Net.NetworkCredential("delacruzpaulino@gmail.com", "Laggel008");
+            smtp.Credentials = credentials;
+            smtp.EnableSsl = true;
+            smtp.Port = 587;
 
+            var message = new System.Net.Mail.MailMessage();
+            message.From = new MailAddress("TestComplete@SimetricaConsulting.com");
+            message.To.Add(email);
+            message.Subject = "Disponibilidad de Test Complete";
+            message.Body = "Saludos \n\n"
+                          + "Notificamos que existe un usuario libre en Test Complete y ha sido asignado a Usted.\n\n"
+                          + "En caso de que ya no necesite utilizarlo favor dar clic aqui:"
+                          + @"http://listadeespera.apphb.com/Dashboard/Liberar";
+
+            smtp.Send(message);
+        }
 
         public ActionResult Esperar()
         {
@@ -166,7 +188,7 @@ namespace TestComplete.Controllers
                 }
             }
             db.SaveChanges();
-
+            Assign();
             return RedirectToAction("Index");
         }
 
