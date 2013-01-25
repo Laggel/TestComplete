@@ -1,0 +1,56 @@
+﻿@model TestComplete.Models.DashboardModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@if (Model.alreadyQueued)
+{
+    @Html.ActionLink("Terminé de Utilizarlo", "Liberar",null,new { @class="button_example"}) 
+}
+else
+{
+    @Html.ActionLink("Solicitar Usuario", "Esperar",null,new { @class="button_example"}) 
+}
+
+@Html.ValidationSummary(true)
+
+<h2>Usuarios</h2>
+
+
+<table width="99%">
+    <tr>
+        @foreach (var item in Model.Recursos) {
+        <td width="33%">
+            @if(item.Estado){
+                <div class="usuario free">
+                <h3>@item.Descripcion</h3>
+                <hr />
+                <text>@Html.ActionLink("Usar", "Usar",null,new { @class="butt bleft"}) </text>
+                </div>
+            }else{
+                <div class="usuario busy">
+                <h3>@item.Descripcion</h3>
+                <hr />
+                <p>En uso por:  @item.Usuario</p><br />
+                </div>
+                
+               
+            }
+            
+        </td>
+        }
+    </tr>
+    
+</table>
+
+<h2>Lista de Espera</h2>
+<br />
+<div class="usuario">
+@foreach (var item in Model.Usuarios) {
+    <p>
+           -  @item.UserName
+    </p>
+}
+    </div>
