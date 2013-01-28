@@ -252,7 +252,9 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -297,6 +299,7 @@
     <Content Include="Views\DashBoard\Create.cshtml" />
     <Content Include="Views\DashBoard\Edit.cshtml" />
     <Content Include="Views\DashBoard\Delete.cshtml" />
+    <Content Include="Views\DashBoard\Usar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

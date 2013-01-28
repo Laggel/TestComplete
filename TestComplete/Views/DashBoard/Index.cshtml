@@ -27,7 +27,9 @@ else
                 <div class="usuario free">
                 <h3>@item.Descripcion</h3>
                 <hr />
-                <text>@Html.ActionLink("Usar", "Usar",null,new { @class="butt bleft"}) </text>
+                <text>
+                    @Html.ActionLink("Usar", "Usar","Dashboard",new { RecursoId = item.RecursoId }, null) 
+                </text>
                 </div>
             }else{
                 <div class="usuario busy">

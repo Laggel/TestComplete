@@ -101,9 +101,14 @@ namespace TestComplete.Controllers
             }
         }
 
+        private UserProfile GetCurrentUser()
+        {
+            return db.UserProfiles.Where(r => r.UserName == User.Identity.Name).FirstOrDefault();
+        }
+
         private bool isQueue()
         {
-            var userId = db.UserProfiles.Where(r => r.UserName == User.Identity.Name).FirstOrDefault().UserId;
+            var userId = GetCurrentUser().UserId;
 
             return (from r in db.Queues
                              where !r.Estado
@@ -161,6 +166,26 @@ namespace TestComplete.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Usar(int RecursoId)
+        {
+            alreadyQueued = isQueue();
+
+            if (!alreadyQueued)
+            {
+                var recursoUsuario = new RecursoUsuario()
+                {
+                    UserId = GetCurrentUser().UserId,
+                    RecursoId = RecursoId,
+                    FechaEntrada = DateTime.Now,
+                    Estado = false
+                };
+
+                db.RecursoUsuarios.Add(recursoUsuario);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+
+        }
 
         public ActionResult Liberar()
         {
