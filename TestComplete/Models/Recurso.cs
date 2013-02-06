@@ -15,7 +15,9 @@ namespace TestComplete.Models
         public int RecursoId { get; set; }
         
         public string Descripcion { get; set; }
-        
+
+        public virtual IQueryable<RecursoUsuario> RecursoUsuario { get; set; }
+
     }
 
     public class RecursoModel

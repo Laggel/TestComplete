@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SignalR;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -19,24 +20,28 @@ namespace TestComplete.Controllers
 
         private List<RecursoModel> loadRecursos()
         {
-            var recursos = (from r in db.Recursos
+            var recursos = (from r in db.Recursos 
                             select new RecursoModel() { RecursoId = r.RecursoId, Descripcion = r.Descripcion }
                            ).ToList();
 
             foreach (var recurso in recursos)
             {
-                recurso.Estado = !(from r in db.RecursoUsuarios
+
+                recurso.Usuario = (from r in db.RecursoUsuarios
                                    where r.RecursoId == recurso.RecursoId
                                       && !r.Estado
-                                   select r).Any();
+                                   select r.User.UserName).FirstOrDefault();
 
-                if (!recurso.Estado)
-                {
-                    recurso.Usuario = db.RecursoUsuarios.Where(r => r.RecursoId == recurso.RecursoId
-                                                               && !r.Estado)
-                                                               .FirstOrDefault().User.UserName;
+                recurso.Estado = recurso.Usuario == null;
+                     
+
+                //if (!recurso.Estado)
+                //{
+                //    recurso.Usuario = db.RecursoUsuarios.Where(r => r.RecursoId == recurso.RecursoId
+                //                                               && !r.Estado)
+                //                                               .FirstOrDefault().User.UserName;
                                                                
-                }
+                //}
             }
 
             return recursos;
@@ -44,25 +49,16 @@ namespace TestComplete.Controllers
         }
 
         private List<UserProfile> loadQueue()
-        {
-            return (from r in db.Queues
-                            where !r.Estado
-                            select r.User
-                            ).ToList();
-
+        {   
+            return db.Queues.Where(r => !r.Estado).Select(r => r.User).ToList();
         }
 
-        private void Assign()
+        private void Assign(int userId)
         {
-
             var test = (from ru in db.RecursoUsuarios
                         where !ru.Estado
                         select ru.RecursoId);
 
-            //!(from ru in db.RecursoUsuarios
-            //                         where ru.RecursoId == r.RecursoId
-            //                         && !ru.Estado
-            //                         select ru).Any()
             var recursos = (from r in db.Recursos
                             where !test.Contains(r.RecursoId)
                             select r).ToList();
@@ -76,25 +72,35 @@ namespace TestComplete.Controllers
             {
                 var lista = queue.ToList();
 
-                int i = 0;
                 foreach (var r in recursos)
                 {
-                    if (lista.Count() != i)
+                    for (var i = 0; i < lista.Count(); i++)
                     {
                         var usuario = lista[i];
-                        var recursoUsuario = new RecursoUsuario()
-                        {
-                            UserId = usuario.UserId,
-                            RecursoId = r.RecursoId,
-                            FechaEntrada = DateTime.Now,
-                            Estado = false
-                        };
-                        i++;
-                        db.RecursoUsuarios.Add(recursoUsuario);
 
-                        usuario.Estado = true;
-                        db.SaveChanges();
-                        sendMail(usuario.User.UserName);
+                        if ((usuario.RecursoId == r.RecursoId //Is the resource specified
+                            || usuario.RecursoId == null) //Has not specified any particular resource
+                            && (!usuario.Estado) //Has not yet be assigned
+                            )
+                        {
+                            var recursoUsuario = new RecursoUsuario()
+                            {
+                                UserId = usuario.UserId,
+                                RecursoId = r.RecursoId,
+                                FechaEntrada = DateTime.Now,
+                                Estado = false
+                            };
+
+                            db.RecursoUsuarios.Add(recursoUsuario);
+
+                            usuario.Estado = true;
+                            usuario.FechaSalida = DateTime.Now;
+                            db.SaveChanges();
+
+                            if (usuario.UserId != userId)
+                                sendMail(usuario.User.UserName);
+                        }
+                        
                     }
                 }
                 db.SaveChanges();
@@ -143,7 +149,7 @@ namespace TestComplete.Controllers
             smtp.Send(message);
         }
 
-        public ActionResult Esperar()
+        public ActionResult Esperar(int recursoId = 0)
         {
             var userId = db.UserProfiles.Where(r => r.UserName == User.Identity.Name).FirstOrDefault().UserId;
 
@@ -155,14 +161,19 @@ namespace TestComplete.Controllers
                 var usuario = new Queue()
                 {
                     FechaEntrada = DateTime.Now,
-                    Estado = false
+                    Estado = false                    
                 };
+                
+                if (recursoId != 0)
+                    usuario.RecursoId = recursoId;
+
                 usuario.UserId = userId;
                 db.Queues.Add(usuario);
                 db.SaveChanges();
-                Assign();
+                Assign(userId);
             }
-            
+
+            Broadcast();
             return RedirectToAction("Index");
         }
 
@@ -183,8 +194,9 @@ namespace TestComplete.Controllers
                 db.RecursoUsuarios.Add(recursoUsuario);
                 db.SaveChanges();
             }
-            return RedirectToAction("Index");
 
+            Broadcast();
+            return RedirectToAction("Index");
         }
 
         public ActionResult Liberar()
@@ -195,9 +207,12 @@ namespace TestComplete.Controllers
                              where !r.Estado
                                 && r.UserId == userId
                              select r).SingleOrDefault();
-            
-            if (queue != null)            
+
+            if (queue != null)
+            {
                 queue.Estado = true;
+                queue.FechaSalida = DateTime.Now;
+            }
             
             var rec = (from r in db.RecursoUsuarios
                          where !r.Estado
@@ -210,10 +225,13 @@ namespace TestComplete.Controllers
                 foreach (var r in rec)
                 {
                     r.Estado = true;
+                    r.FechaSalida = DateTime.Now;
                 }
             }
+
             db.SaveChanges();
-            Assign();
+            Assign(0);
+            Broadcast();
             return RedirectToAction("Index");
         }
 
@@ -232,8 +250,15 @@ namespace TestComplete.Controllers
             dashboard.Usuarios = loadQueue();
             dashboard.alreadyQueued = isQueue();
 
+            
             return View(dashboard);
         }
+
+        public void Broadcast()
+        {
+            var context = GlobalHost.ConnectionManager.GetHubContext<PresentationHub>();
+            context.Clients.showSlide("hello");
+        }   
 
         //
         // GET: /Dashboard/Details/5

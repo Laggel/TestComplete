@@ -4,7 +4,6 @@
     ViewBag.Title = "Index";
 }
 
-
 @if (Model.alreadyQueued)
 {
     @Html.ActionLink("Terminé de Utilizarlo", "Liberar",null,new { @class="button_example"}) 
@@ -28,7 +27,7 @@ else
                 <h3>@item.Descripcion</h3>
                 <hr />
                 <text>
-                    @Html.ActionLink("Usar", "Usar","Dashboard",new { RecursoId = item.RecursoId }, null) 
+                    @Html.ActionLink("Usar", "Usar","Dashboard",new { RecursoId = item.RecursoId}, null) 
                 </text>
                 </div>
             }else{
@@ -36,6 +35,9 @@ else
                 <h3>@item.Descripcion</h3>
                 <hr />
                 <p>En uso por:  @item.Usuario</p><br />
+                <text>
+                    @Html.ActionLink("Esperar", "Esperar","Dashboard",new { RecursoId = item.RecursoId}, null) 
+                </text>
                 </div>
                 
                
@@ -52,7 +54,31 @@ else
 <div class="usuario">
 @foreach (var item in Model.Usuarios) {
     <p>
-           -  @item.UserName
+           -  @item.UserName 
     </p>
 }
     </div>
+
+<ul id="messages"></ul>
+
+@section scripts{
+    <script src="Scripts/jquery.signalR-0.5.3.js" type="text/javascript"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
+    
+<!-- Start the presentation -->
+<script type="text/javascript">
+    $(function () {
+        // SignalR hub initialization
+        var presentation = $.connection.presentation;
+
+        presentation.showSlide = function (slideId) {
+           location.reload();
+        };
+
+        $.connection.hub.start(function () {
+        });
+
+    });
+</script>
+
+}

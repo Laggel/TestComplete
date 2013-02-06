@@ -21,5 +21,8 @@ namespace TestComplete.Models
         public DateTime? FechaSalida { get; set; }
 
         public bool Estado { get; set; }
+
+        public int? RecursoId { get; set; }
+        public virtual Recurso Recurso { get; set; }
     }
 }
