@@ -34,7 +34,9 @@ else
                 <div class="usuario busy">
                 <h3>@item.Descripcion</h3>
                 <hr />
-                <p>En uso por:  @item.Usuario</p><br />
+                <p>En uso por:  @item.Usuario</p>
+
+                <p><b>Team Viewer</b><br /> (  @item.UsuarioTV / simetrica01 )</p>     
                 <text>
                     @Html.ActionLink("Esperar", "Esperar","Dashboard",new { RecursoId = item.RecursoId}, null) 
                 </text>

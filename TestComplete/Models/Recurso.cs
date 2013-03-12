@@ -30,5 +30,6 @@ namespace TestComplete.Models
 
         public string Usuario { get; set; }
 
+        public string UsuarioTV { get; set; }
     }
 }

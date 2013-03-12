@@ -33,7 +33,13 @@ namespace TestComplete.Controllers
                                    select r.User.UserName).FirstOrDefault();
 
                 recurso.Estado = recurso.Usuario == null;
-                     
+
+                switch (recurso.RecursoId)
+                {
+                    case 1: recurso.UsuarioTV = "591254081"; break;
+                    case 2: recurso.UsuarioTV = "591255747"; break;
+                    case 3: recurso.UsuarioTV = "591266765"; break;
+                }
 
                 //if (!recurso.Estado)
                 //{
@@ -45,7 +51,6 @@ namespace TestComplete.Controllers
             }
 
             return recursos;
-
         }
 
         private List<UserProfile> loadQueue()
