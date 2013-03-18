@@ -17,11 +17,12 @@ else
 
 <h2>Usuarios</h2>
 
-
-<table width="99%">
-    <tr>
+<ul id="Recursos">
+@*<table width="200%">
+    <tr>*@
         @foreach (var item in Model.Recursos) {
-        <td width="33%">
+        @*<td width="400px">*@
+            <li>
             @if(item.Estado){
                 <div class="usuario free">
                 <h3>@item.Descripcion</h3>
@@ -45,11 +46,12 @@ else
                
             }
             
-        </td>
+        @*</td>*@
+        </li>
         }
-    </tr>
-    
-</table>
+@*    </tr>
+</table>*@
+    </ul>
 
 <h2>Lista de Espera</h2>
 <br />
